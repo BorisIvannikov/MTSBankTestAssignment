@@ -1,0 +1,68 @@
+﻿CREATE TABLE UNICUS_AutoCategories (
+    Id INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    Description NVARCHAR(255)
+);
+
+CREATE TABLE UNICUS_AutoMarks (
+    Id INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    CategoryId INT,
+    FOREIGN KEY (CategoryId) REFERENCES UNICUS_AutoCategories(Id)
+);
+
+CREATE TABLE UNICUS_AutoModels (
+    Id INT PRIMARY KEY,
+    Name NVARCHAR(50),
+    MarkID INT,
+    FOREIGN KEY (MarkID) REFERENCES UNICUS_AutoMarks(Id)
+);
+
+INSERT INTO UNICUS_AutoCategories (Id, Name, Description)
+VALUES (1, 'Segment A', 'Description for Segment A'),
+       (2, 'Segment B', 'Description for Segment B'),
+       (3, 'Segment C', 'Description for Segment C'),
+	   (4, 'Segment D', 'Description for Segment D'),
+       (5, 'Segment E', 'Description for Segment E');
+
+INSERT INTO UNICUS_AutoMarks (Id, Name, CategoryId)
+VALUES (1, 'BMW', 1),
+       (2, 'Audi', 1),
+       (3, 'Kia', 2),
+       (4, 'Citroen', 3),
+	   (5, 'Dodge', 4),
+       (6, 'Ford', 4),
+       (7, 'Mercedes-Benz', 5),
+       (8, 'Volvo', 5);
+
+
+INSERT INTO UNICUS_AutoModels (Id, Name, MarkID)
+VALUES (1, 'A2', 2),
+       (2, 'A4', 2),
+       (3, 'Q7', 1),
+       (4, 'TT', 3),
+       (5, 'C5', 4),
+	   (6, 'Challenger', 5),
+       (7, 'Mustang', 6),
+       (8, 'GLC', 7),
+       (9, 'S90', 8),
+       (10, 'D5', 5);
+
+
+--Вывести марку авто с максимальным количеством моделей
+SELECT TOP 1 m.Name, COUNT(*) as ModelCount
+FROM UNICUS_AutoModels a
+JOIN UNICUS_AutoMarks m ON a.MarkID = m.Id
+GROUP BY m.Name
+ORDER BY ModelCount DESC;
+--Вывести наименование сегмента авто марки CITROEN модели C5
+SELECT c.Name
+FROM UNICUS_AutoModels a
+JOIN UNICUS_AutoMarks m ON a.MarkID = m.Id
+JOIN UNICUS_AutoCategories c ON m.CategoryId = c.Id
+WHERE m.Name = 'Citroen' AND a.Name = 'C5';
+--Вывести первые 5 марок авто, наименование которых начинается на «D», отсортировать по возрастанию.
+SELECT TOP 5 Name
+FROM UNICUS_AutoMarks
+WHERE Name LIKE 'D%'
+ORDER BY Name ASC;
